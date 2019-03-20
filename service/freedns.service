@@ -1,0 +1,13 @@
+[Unit]
+Description=Service that updates freedns.afraid.org DNS entries.
+After=network.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/opt/freedns/freedns.sh -a start
+ExecStop=/opt/freedns/freedns.sh -a stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
