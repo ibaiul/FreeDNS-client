@@ -47,7 +47,7 @@ exit
 %dir %attr(755,root,root) /opt/freedns
 %attr(0744, root, root) /opt/freedns/*
 %attr(0744, root, root) /usr/lib/systemd/system/freedns.service
-%dir %attr(700,root,root) /var/log/freedns
+%dir %attr(755,root,root) /var/log/freedns
 
 %pre
 #if ! getent group freedns >/dev/null; then
