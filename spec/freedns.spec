@@ -2,7 +2,7 @@ Name: freedns
 Version: 1.0.0
 Release: 1
 License: MIT
-URL: https://bitbucket.ibai.eus/scm/gh/freedns.git
+URL: https://github.com/ibaiul/FreeDNS-client.git
 Group: System
 Packager: Ibai Usubiaga
 BuildArch: noarch
