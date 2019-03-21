@@ -8,6 +8,7 @@ Packager: Ibai Usubiaga
 BuildArch: noarch
 Requires: bash
 Requires: curl
+Requires: bind-utils
 Summary: freedns client
 BuildRoot: ~/rpmbuild
 
