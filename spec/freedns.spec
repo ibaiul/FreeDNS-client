@@ -1,6 +1,6 @@
 Name: freedns
 Version: 1.0.0
-Release: 1
+Release: 2
 License: MIT
 URL: https://github.com/ibaiul/FreeDNS-client.git
 Group: System
