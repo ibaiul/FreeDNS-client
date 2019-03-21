@@ -136,7 +136,7 @@ Trigger the build
 ```
 rpmbuild --target noarch -bb ~/rpmbuild/SPECS/freedns.spec
 ```
-At this point your RPM should be ready at **~/rpmbuild/RPMS/noarch/freedns-1.0.0-1.noarch.rpm**
+At this point your RPM should be ready at **~/rpmbuild/RPMS/noarch/freedns-1.0.0-2.noarch.rpm**
 
 ##### Sign the RPM
 If you want to optionally sign the RPM follow this instructions
@@ -168,7 +168,7 @@ rpmbuild --target noarch -bb ~/rpmbuild/SPECS/freedns.spec --sign
 Sign only
 
 ```
-rpm --addsign ~/rpmbuild/RPMS/noarch/freedns-1.0.0-1.noarch.rpm
+rpm --addsign ~/rpmbuild/RPMS/noarch/freedns-1.0.0-2.noarch.rpm
 ```
 Export your public GPG key
 
@@ -179,5 +179,5 @@ Check the signature
 
 ```
 sudo rpm --import public_key.pub
-rpm --checksig ~/rpmbuild/RPMS/noarch/freedns-1.0.0-1.noarch.rpm
+rpm --checksig ~/rpmbuild/RPMS/noarch/freedns-1.0.0-2.noarch.rpm
 ```
