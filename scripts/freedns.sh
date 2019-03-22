@@ -292,7 +292,7 @@ get_options() {
                 ;;
             -s|--shadow)
                 IFS=',' read -r -a SHADOWS <<< "$2"
-                if [[ ${#SHADOWS[@]} -eq 0 || -z $SHADOWS ]]; then
+                if [[ ${#SHADOWS[@]} -eq 0 ]]; then
                     log "Invalid shadow list specified." >&2
                     exit 1
                 fi
