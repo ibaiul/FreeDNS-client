@@ -79,6 +79,11 @@
 #                           requires to updated to point to the current dynamic 
 #                           external IP of the local server.
 #
+#     -d, --dns <dns_provider_name>
+#             Set the DNS service provider.
+#             Currently supported values: freedns
+#             Default: freedns
+#
 #     -u, --user <freedns_user>
 #             Provide the FreeDNS user instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
@@ -300,6 +305,10 @@ get_options() {
                 ;;
             -a|--action)
                 ACTION="$2"
+                shift
+                ;;
+            -d|--dns)
+                DNS_PROVIDER="$2"
                 shift
                 ;;
             -u|--user)
