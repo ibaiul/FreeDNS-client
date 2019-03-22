@@ -218,11 +218,13 @@ update_dns () {
     fi
 }
 
-# process master and shadow hosts
+# process a master or shadow host
 process_host() {
     TRIMMED_DOMAIN=$(trim $1)
-    if [[ $TRIMMED_DOMAIN = \#* || -z $TRIMMED_DOMAIN ]] ; then
+    if [[ $TRIMMED_DOMAIN = \#* ]] ; then
         verbose "Ignoring $2: $TRIMMED_DOMAIN"
+    elif [ -z $TRIMMED_DOMAIN ]; then
+        verbose "Ignoring $2: $TRIMMED_DOMAIN" >&2
     else
         log "Processing $2: $TRIMMED_DOMAIN"
         if [ "$2" = "master" ]; then
