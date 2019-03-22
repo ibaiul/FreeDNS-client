@@ -93,6 +93,12 @@
 #     -s, --shadow <hostname1,hostname2,...>
 #             Provide a comma separated list of shadow hosts to check instead of
 #             using the configuration file.
+#     -cf, --credential-file <credentials_config_path>
+#             Use the provided credentials file instead of the default one.
+#     -mf, --master-file
+#             Use the provided master file instead of the default one.
+#     -sf, --shadow-file
+#             Use the provided shadow file instead of the default one.
 #
 # TODO
 #     Lock executions:
@@ -290,6 +296,18 @@ get_options() {
                     log "Invalid shadow list specified." >&2
                     exit 1
                 fi
+                shift
+                ;;
+            -cf|--credential-file)
+                CREDENTIAL_FILE="$2"
+                shift
+                ;;
+            -mf|--master-file)
+                MASTER_FILE="$2"
+                shift
+                ;;
+            -sf|--shadow-file)
+                SHADOW_FILE="$2"
                 shift
                 ;;
             *)
