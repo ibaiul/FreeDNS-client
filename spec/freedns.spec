@@ -1,6 +1,6 @@
 Name: freedns
-Version: 1.0.0
-Release: 2
+Version: 1.0.1
+Release: 1
 License: MIT
 URL: https://github.com/ibaiul/FreeDNS-client.git
 Group: System
@@ -79,6 +79,9 @@ echo "Clean: $RPM_BUILD_ROOT"
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Sun Mar 17 2019 Ibai Usubiaga <admin@ibai.eus>
-  - Improved initial version of my old script.
+* Sun Mar 22 2019 Ibai Usubiaga <admin@ibai.eus>
+  - Added support for providing config files as arguments.
+  - Added support for providing master and shadow hostnames as comma separated
+    arguments.
+  - Improved error logs
 
