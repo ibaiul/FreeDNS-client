@@ -62,6 +62,7 @@
 # OPTIONS
 #     -v, --verbose
 #             Enable debug logs at /var/log/freedns/freedns.log
+#             Default: disabled
 #
 #     -h, --help
 #             Show help.
@@ -82,23 +83,35 @@
 #             Provide the FreeDNS user instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
 #             credentials config file will be used.
+#             Default taken from: /etc/freedns/credentials.conf
 #
 #     -p, --pass <freedns_password>
 #             Provide the FreeDNS password instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
 #             credentials config file will be used.
+#             Default taken from: /etc/freedns/credentials.conf
+#
 #     -m, --master <hostname1,hostname2,...>
 #             Provide a comma separated list of master hosts to check instead of
 #             using the configuration file.
+#             Default taken from: /etc/freedns/master.conf
+#
 #     -s, --shadow <hostname1,hostname2,...>
 #             Provide a comma separated list of shadow hosts to check instead of
 #             using the configuration file.
+#             Default taken from: /etc/freedns/shadow.conf
+#
 #     -cf, --credential-file <credentials_config_path>
 #             Use the provided credentials file instead of the default one.
+#             Default: /etc/freedns/credentials.conf
+#
 #     -mf, --master-file
 #             Use the provided master file instead of the default one.
+#             Default: /etc/freedns/master.conf
+#
 #     -sf, --shadow-file
 #             Use the provided shadow file instead of the default one.
+#             Default: /etc/freedns/shadow.conf
 #
 # TODO
 #     Lock executions:
