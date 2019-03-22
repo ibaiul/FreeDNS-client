@@ -208,7 +208,7 @@ update_dns () {
             process_host "$DOMAIN" "master"
         done <"$MASTER_FILE"
     else
-        log "Master config file $MASTER_FILE was not found." >&2
+        log "Master config file $MASTER_FILE was not found or was not readable." >&2
     fi
     # shadow
     if [[ ${#SHADOWS[@]} -gt 0 ]]; then
@@ -220,7 +220,7 @@ update_dns () {
             process_host "$DOMAIN" "shadow"
         done <"$SHADOW_FILE"
     else
-        log "Shadow config file $SHADOW_FILE was not found." >&2
+        log "Shadow config file $SHADOW_FILE was not found or was not readable." >&2
     fi
 }
 
