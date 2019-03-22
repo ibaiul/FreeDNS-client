@@ -87,6 +87,12 @@
 #             Provide the FreeDNS password instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
 #             credentials config file will be used.
+#     -m, --masters <hostname1,hostname2,...>
+#             Provide a comma separated list of master hosts to check instead of
+#             using the configuration file.
+#     -s, --shadows <hostname1,hostname2,...>
+#             Provide a comma separated list of shadow hosts to check instead of
+#             using the configuration file.
 #
 # TODO
 #     Lock executions:
@@ -98,10 +104,6 @@
 #     Create freedns user and group
 #     - Modify spec file to include this and modify service
 #     - Add jenkins to freedns group to avoid running as root
-#     Create additional options
-#     - Implement -m|--master and -s|--shadow to provide a comma separated list 
-#       of domains instead of using the config files
-#     - Update this docu
 #
 ################################################################################
 
@@ -191,7 +193,11 @@ update_dns () {
     verbose "Current IP: $NEW_IP"
 
     # master
-    if [[ -f $MASTER_FILE && -r $MASTER_FILE ]]; then
+    if [[ ${#MASTERS[@]} -gt 0 ]]; then
+        for DOMAIN in "${MASTERS[@]}"; do
+            process_host "$DOMAIN" "master"
+        done
+    elif [[ -f $MASTER_FILE && -r $MASTER_FILE ]]; then
         while IFS= read -r DOMAIN; do
             process_host "$DOMAIN" "master"
         done <"$MASTER_FILE"
@@ -199,7 +205,11 @@ update_dns () {
         log "Master config file $MASTER_FILE was not found." >&2
     fi
     # shadow
-    if [[ -f $SHADOW_FILE && -r $SHADOW_FILE ]]; then
+    if [[ ${#SHADOWS[@]} -gt 0 ]]; then
+        for DOMAIN in "${SHADOWS[@]}"; do
+            process_host "$DOMAIN" "shadow"
+        done
+    elif [[ -f $SHADOW_FILE && -r $SHADOW_FILE ]]; then
         while IFS= read -r DOMAIN; do
             process_host "$DOMAIN" "shadow"
         done <"$SHADOW_FILE"
@@ -262,6 +272,22 @@ get_options() {
                 ;;
             -p|--pass)
                 FREEDNS_PASS="$2"
+                shift
+                ;;
+            -m|--masters)
+                IFS=',' read -r -a MASTERS <<< "$2"
+                if [[ ${#MASTERS[@]} -eq 0 ]]; then
+                    log "Invalid master list specified." >&2
+                    exit 1
+                fi
+                shift
+                ;;
+            -s|--shadows)
+                IFS=',' read -r -a SHADOWS <<< "$2"
+                if [[ ${#SHADOWS[@]} -eq 0 || -z $SHADOWS ]]; then
+                    log "Invalid shadow list specified." >&2
+                    exit 1
+                fi
                 shift
                 ;;
             *)
