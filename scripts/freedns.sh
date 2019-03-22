@@ -129,6 +129,7 @@
 unset $HISTFILE
 
 CRON_CMD="*/5 * * * * /opt/freedns/freedns.sh -v -a update-dns"
+DNS_PROVIDER=freedns
 MASTER_FILE=/etc/freedns/master.conf
 SHADOW_FILE=/etc/freedns/shadow.conf
 CREDENTIAL_FILE=/etc/freedns/credentials.conf
@@ -205,6 +206,7 @@ update_dns () {
         log "Password was not provided." >&2
         exit 1
     fi
+    verbose "DNS provider: $DNS_PROVIDER"
     verbose "User: $FREEDNS_USER"
 
     # check current ip
@@ -265,11 +267,24 @@ process_host() {
 update_host() {
     HOST_IP=$(dig +short $1)
     if [ "$NEW_IP" != "$HOST_IP" ]; then
-        log "Updating $1"
-        curl -u $FREEDNS_USER:$FREEDNS_PASS https://freedns.afraid.org/nic/update?hostname=$1
+        case $DNS_PROVIDER in
+            freedns)
+                update_freedns_host $1
+                ;;
+            *)
+                log "Error: Unsupported DNS service $DNS_PROVIDER found." >&2
+                exit 1
+                ;;
+        esac
     else
         verbose "$1 IP and current IP are equal. Do nothing."
     fi
+}
+
+# update DNS entry of a FreeDNS hostname
+update_freedns_host() {
+    log "Updating $1"
+    curl -u $FREEDNS_USER:$FREEDNS_PASS https://freedns.afraid.org/nic/update?hostname=$1
 }
 
 # Get options from positional parameters
