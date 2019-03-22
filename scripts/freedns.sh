@@ -87,10 +87,10 @@
 #             Provide the FreeDNS password instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
 #             credentials config file will be used.
-#     -m, --masters <hostname1,hostname2,...>
+#     -m, --master <hostname1,hostname2,...>
 #             Provide a comma separated list of master hosts to check instead of
 #             using the configuration file.
-#     -s, --shadows <hostname1,hostname2,...>
+#     -s, --shadow <hostname1,hostname2,...>
 #             Provide a comma separated list of shadow hosts to check instead of
 #             using the configuration file.
 #
@@ -276,7 +276,7 @@ get_options() {
                 FREEDNS_PASS="$2"
                 shift
                 ;;
-            -m|--masters)
+            -m|--master)
                 IFS=',' read -r -a MASTERS <<< "$2"
                 if [[ ${#MASTERS[@]} -eq 0 ]]; then
                     log "Invalid master list specified." >&2
@@ -284,7 +284,7 @@ get_options() {
                 fi
                 shift
                 ;;
-            -s|--shadows)
+            -s|--shadow)
                 IFS=',' read -r -a SHADOWS <<< "$2"
                 if [[ ${#SHADOWS[@]} -eq 0 || -z $SHADOWS ]]; then
                     log "Invalid shadow list specified." >&2
