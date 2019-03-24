@@ -276,13 +276,13 @@ process_host() {
     else
         log "Processing $2: $TRIMMED_DOMAIN"
         if [ "$2" = "master" ]; then
-            update_host $TRIMMED_DOMAIN
+            update_host_if_needed $TRIMMED_DOMAIN
         else
             #CODE=$(curl --head --location --write-out %{http_code} --silent --output /dev/null https://$TRIMMED_DOMAIN --connect-timeout 60)
             CODE=$(curl --head --location --write-out %{http_code} --silent --output /dev/null https://$TRIMMED_DOMAIN)
             if [[ $CODE -ne 200 ]]; then
                 log "$TRIMMED_DOMAIN is not available. Status: $CODE. Assuming control."
-                update_host $TRIMMED_DOMAIN
+                update_host_if_needed $TRIMMED_DOMAIN
             else
                 verbose "$TRIMMED_DOMAIN is available. Status: $CODE. Nothing to do."
             fi
@@ -291,7 +291,7 @@ process_host() {
 }
 
 # update host DNS if IP has changed
-update_host() {
+update_host_if_needed() {
     HOST_IP=$(dig +short $1)
     if [ "$NEW_IP" != "$HOST_IP" ]; then
         log "Updating $1"
