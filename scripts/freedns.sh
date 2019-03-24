@@ -163,8 +163,8 @@ main() {
 	    log "Service started."
             ;;
         update-dns)
-            update_dns $FREEDNS_USER $FREEDNS_PASS
-	        ;;
+            update_dns $AUTH_USER $AUTH_PASS
+            ;;
         status)
             RESULT=$(crontab -l | grep -F "$CRON_CMD")
             if [ $? == 0 ]; then
@@ -195,7 +195,8 @@ main() {
 
 # update DNS action
 update_dns () {
-    if [[ -z "$FREEDNS_USER" && -z "$FREEDNS_PASS" ]]; then
+    # check credentials were set
+    if [[ -z "$AUTH_USER" && -z "$AUTH_PASS" ]]; then
         if [[ -f $CREDENTIAL_FILE && -r $CREDENTIAL_FILE ]]; then
             . ${CREDENTIAL_FILE}
         else
@@ -203,16 +204,16 @@ update_dns () {
             exit 1
         fi
     fi
-    if [ -z "$FREEDNS_USER" ]; then
+    if [ -z "$AUTH_USER" ]; then
         log "User name was not provided." >&2
         exit 1
     fi
-    if [ -z "$FREEDNS_PASS" ]; then
+    if [ -z "$AUTH_PASS" ]; then
         log "Password was not provided." >&2
         exit 1
     fi
     verbose "DNS provider: $DNS_PROVIDER"
-    verbose "User: $FREEDNS_USER"
+    verbose "User: $AUTH_USER"
 
     # check current ip
     NEW_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
@@ -323,11 +324,11 @@ get_options() {
                 shift
                 ;;
             -u|--user)
-                FREEDNS_USER="$2"
+                AUTH_USER="$2"
                 shift
                 ;;
             -p|--pass)
-                FREEDNS_PASS="$2"
+                AUTH_PASS="$2"
                 shift
                 ;;
             -m|--master)
