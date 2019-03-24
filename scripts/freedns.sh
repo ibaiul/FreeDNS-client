@@ -160,7 +160,7 @@ main() {
             printf '%s\n' "$CRON_CMD" >>$CRON_TEMP_FILE
             # override crontab content with the content in the temporary file
             crontab $CRON_TEMP_FILE && rm -f $CRON_TEMP_FILE
-	    log "Service started."
+            log "Service started."
             ;;
         update-dns)
             update_dns $AUTH_USER $AUTH_PASS
@@ -171,7 +171,7 @@ main() {
                 echo "Freedns service is ON."
             else
                 echo "Freedns service is OFF."
-	        fi
+            fi
             ;;
         stop)
             RESULT=$(crontab -l | grep -F "$CRON_CMD")
