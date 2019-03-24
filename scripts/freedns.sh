@@ -189,8 +189,7 @@ main() {
             log "Service stopped."
             ;;
         *)
-            log "Unknown action found: $ACTION"
-            usage
+            log "Unknown action found: $ACTION" >&2
             exit 1
             ;;
     esac
@@ -202,7 +201,7 @@ update_dns () {
         if test -f ${CREDENTIAL_FILE} ; then
             . ${CREDENTIAL_FILE}
         else
-            log "User and password were not provided and credentials file was not found." >&2
+            log "User and password were not provided and credentials file was not found or was not readable." >&2
             exit 1
         fi
     fi
