@@ -141,7 +141,6 @@ DNS_PROVIDER=freedns
 MASTER_FILE=/etc/freedns/master.conf
 SHADOW_FILE=/etc/freedns/shadow.conf
 CREDENTIAL_FILE=/etc/freedns/credentials.conf
-IP_FILE=/var/lib/freedns/ip
 LOG_FILE=/var/log/freedns/freedns.log
 #exec 3>&1 1>>$LOG_FILE 2>&1
 
@@ -151,7 +150,6 @@ main() {
     CRON_TEMP_FILE=/opt/freedns/crontab.tmp
     case "$ACTION" in
         start)
-            #RESULT=$(crontab -l | grep -n "$CRON_CMD" | sed 's/^\([0-9]\+\):.*$/\1/')
             RESULT=$(crontab -l | grep -F "$CRON_CMD")
             if [ ! -z "$RESULT" ]; then
                 exit 0;
@@ -436,8 +434,3 @@ show_help() {
 }
 
 main "$@"
-
-
-
-
-
