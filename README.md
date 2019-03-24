@@ -1,15 +1,21 @@
 # FreeDNS-client
-Linux client to update DNS entries at freedns.afraid.org
+Linux client to update DNS type A records.
 
 ### Preface
 If you are running some servers or services in a network with a dynamic public IP address this tool might be helpful to maintain their corresponding DNS entries up to date.
 
-The following client is only compatible with the FreeDNS service at https://freedns.afraid.org and provides packages to be installed in RedHat derivative Linux systems such as CentOS or Fedora. Anyway, adapting this work to other DNS services or Linux systems would require just a few changes.
+Supported DNS providers:
+- FreeDNS (https://freedns.afraid.org)
+- Dinahosting (https://dinahosting.com)
+
+The source code is compatible with most used Linux distributions although I only maintain the package builders for RedHat derivative Linux systems such as CentOS or Fedora.
+
+Anyway, adapting this work to other DNS providers or Linux package systems would require just a few changes.
 
 ### How it works
-There is one script that does all the work - freedns.sh - and it can be run either manually or automatically via systemd services.
+There is one script that does all the work - main.sh - and it can be run either manually or automatically via systemd services. There are also other smaller scripts that encapsulate the logic to update DNS records at the different compatible DNS providers.
 
-The main idea is that you run this tool in a local server that has one or more publicly accessible services and when the dynamic IP of the server changes, the script automatically takes care of updating the DNS entries pointing to your server. It checks for updates periodically using cron jobs.
+The main idea is that you run this tool in a local server that has one or more publicly accessible services and when the dynamic IP of the server changes, the script automatically takes care of updating the type A DNS records pointing to your server. It checks for updates periodically using cron jobs.
 
 There are some configuration files to set your credentials and the list of hostnames located in the server.
 
@@ -17,7 +23,7 @@ There are some configuration files to set your credentials and the list of hostn
 Create the yum repository definition file at **/etc/yum.repos.d/freedns.repo**
 
 ```
-[freednsrepo]
+[freedns-releases]
 name=FreeDNS client Repository
 baseurl=https://nexus.ibai.eus/repository/yum-releases-public
 enabled=1
@@ -47,8 +53,8 @@ ls -l /etc/freedns/credentials.conf
 The content of the credentials file should look like this
 
 ```
-FREEDNS_USER=your_freedns_user
-FREEDNS_PASS=your_freedns_pass
+AUTH_USER=authentication_user
+AUTH_PASS=authentication_pass
 ```
 ##### Set the hostnames
 Edit the master configuration file at **/etc/freedns/master.conf** and add your hostnames.
@@ -78,17 +84,17 @@ systemctl stop freedns
 
 Run the script manually.
 
-Currently it requires root permissions to avoid any other user in the system reading the credentials file or changing the DNS records without being the admin.
+Currently it requires root permissions to avoid any other user in the system reading the credentials file without being the admin.
 
 ```
-sudo /opt/freedns/freedns.sh -v -a update-dns
+sudo /opt/freedns/main.sh -v -a update-dns
 ```
 Alternatively you can pass the credentials as parameters if you plan to run the script through Jenkins or other kind of mechanism that handles the credentials in another way.
 
 Notice that it is not recommended to write the credentials in plain text unless you can ensure that logging to history is disabled. Prefer passing environment variables.
 
 ```
-sudo /opt/freedns/freedns.sh -v -a update-dns -u $FREEDNS_USER -p $FREEDNS_PASS
+/opt/freedns/main.sh -v -a update-dns -u $AUTH_USER -p $AUTH_PASS
 ```
 ##### Logs
 You can check the logs at **/var/log/freedns/freedns.log**
@@ -97,7 +103,7 @@ You can check the logs at **/var/log/freedns/freedns.log**
 You can see the usage of the command with **-h** or **--help** options.
 
 ```
-sudo /opt/freedns/freedns.sh -h
+sudo /opt/freedns/main.sh -h
 ```
 
 ### DIY
@@ -136,7 +142,7 @@ Trigger the build
 ```
 rpmbuild --target noarch -bb ~/rpmbuild/SPECS/freedns.spec
 ```
-At this point your RPM should be ready at **~/rpmbuild/RPMS/noarch/freedns-1.0.0-2.noarch.rpm**
+At this point your RPM should be ready at **~/rpmbuild/RPMS/noarch/freedns-${version}.noarch.rpm**
 
 ##### Sign the RPM
 If you want to optionally sign the RPM follow this instructions
@@ -168,7 +174,7 @@ rpmbuild --target noarch -bb ~/rpmbuild/SPECS/freedns.spec --sign
 Sign only
 
 ```
-rpm --addsign ~/rpmbuild/RPMS/noarch/freedns-1.0.0-2.noarch.rpm
+rpm --addsign ~/rpmbuild/RPMS/noarch/freedns-${version}.noarch.rpm
 ```
 Export your public GPG key
 
@@ -179,5 +185,5 @@ Check the signature
 
 ```
 sudo rpm --import public_key.pub
-rpm --checksig ~/rpmbuild/RPMS/noarch/freedns-1.0.0-2.noarch.rpm
+rpm --checksig ~/rpmbuild/RPMS/noarch/freedns-${version}.noarch.rpm
 ```
