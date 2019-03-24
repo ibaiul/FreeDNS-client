@@ -81,7 +81,7 @@
 #
 #     -d, --dns <dns_provider_name>
 #             Set the DNS service provider.
-#             Currently supported values: freedns
+#             Currently supported values: freedns, dinahosting
 #             Default: freedns
 #
 #     -u, --user <freedns_user>
@@ -276,6 +276,9 @@ update_host() {
             freedns)
                 update_freedns_host $1
                 ;;
+            dinahosting)
+                update_dinahosting_host $1
+                ;;
             *)
                 log "Error: Unsupported DNS service $DNS_PROVIDER found." >&2
                 exit 1
@@ -290,6 +293,14 @@ update_host() {
 update_freedns_host() {
     log "Updating $1"
     curl -u $FREEDNS_USER:$FREEDNS_PASS https://freedns.afraid.org/nic/update?hostname=$1
+}
+
+# update DNS entry of hostname from Dinahostng provider
+# https://en.dinahosting.com/api/documentation#generador-de-codigo
+update_dinahosting_host() {
+    extract_domain $1
+    extract_subdomain $1
+    curl -u $FREEDNS_USER:$FREEDNS_PASS -d "domain=$EXT_DOMAIN&hostname=$EXT_SUBDOMAIN&ip=$NEW_IP&oldIp=&command=Domain_Zone_UpdateTypeA&responseType=Xml" https://dinahosting.com/special/api.php	
 }
 
 # Get options from positional parameters
@@ -354,6 +365,24 @@ get_options() {
         esac
         shift
     done
+}
+
+# extract subdomain
+extract_subdomain() {
+    EXT_SUBDOMAIN=$(echo $1 | awk -F. '{if(NF<2||NF>4)exit 1;if(NF==2)print"";if(NF==3)print$1;if(NF==4)print$1"."$2}')
+    if [ $? -ne 0 ]; then
+        log "Error: Could not extract subdomain from $1" >&2
+        exit 1
+    fi
+}
+
+# extract domain
+extract_domain() {
+    EXT_DOMAIN=$(echo $1 | awk -F. '{if(NF<2||NF>4)exit 1;print$(NF-1)"."$NF}')
+    if [ $? -ne 0 ]; then
+        log "Error: Could not extract domain from $1" >&2
+        exit 1
+    fi
 }
 
 # Trim string
