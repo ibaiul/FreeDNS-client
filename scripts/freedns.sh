@@ -147,7 +147,7 @@ LOG_FILE=/var/log/freedns/freedns.log
 main() {
     get_options "$@"
 
-    CRON_TEMP_FILE=/opt/freedns/crontab.tmp
+    CRON_TEMP_FILE=/var/lib/freedns/crontab.tmp
     case "$ACTION" in
         start)
             RESULT=$(crontab -l | grep -F "$CRON_CMD")
