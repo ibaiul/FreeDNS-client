@@ -117,6 +117,9 @@
 #     -sf, --shadow-file
 #             Use the provided shadow file instead of the default one.
 #             Default: /etc/freedns/shadow.conf
+#     -nl, --no-log
+#             Ĺog only to stdout and stderr and do not log to file
+#             Default: disabled
 #
 # TODO
 #     Lock executions:
@@ -357,6 +360,9 @@ get_options() {
             -sf|--shadow-file)
                 SHADOW_FILE="$2"
                 shift
+                ;;
+            -nl|--no-log)
+                LOG_FILE=/dev/null
                 ;;
             *)
                 log "Error: Unrecognized option $1" >&2
