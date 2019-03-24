@@ -210,6 +210,7 @@ update_dns () {
     DNS_PROVIDER_SCRIPT="${INSTALL_DIR}/${DNS_PROVIDER}.sh"
     if [[ -f $DNS_PROVIDER_SCRIPT && -r $DNS_PROVIDER_SCRIPT ]]; then
         . $DNS_PROVIDER_SCRIPT
+        verbose "Loaded $DNS_PROVIDER_SCRIPT file."
     else
         log "Error: Unsupported DNS provider $DNS_PROVIDER found. Missing or non readable script at: $DNS_PROVIDER_SCRIPT" >&2
         exit 1
@@ -391,7 +392,7 @@ trim() {
 }
 
 # Log to file
-function log {  
+function log {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a $LOG_FILE
 }
 
