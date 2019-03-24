@@ -196,7 +196,7 @@ main() {
 # update DNS action
 update_dns () {
     if [[ -z "$FREEDNS_USER" && -z "$FREEDNS_PASS" ]]; then
-        if test -f ${CREDENTIAL_FILE} ; then
+        if [[ -f $CREDENTIAL_FILE && -r $CREDENTIAL_FILE ]]; then
             . ${CREDENTIAL_FILE}
         else
             log "User and password were not provided and credentials file was not found or was not readable." >&2
