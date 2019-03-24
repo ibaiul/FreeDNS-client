@@ -152,6 +152,7 @@ MASTER_FILE=/etc/freedns/master.conf
 SHADOW_FILE=/etc/freedns/shadow.conf
 CREDENTIAL_FILE=/etc/freedns/credentials.conf
 LOG_FILE=/var/log/freedns/freedns.log
+INSTALL_DIR=/opt/freedns
 #exec 3>&1 1>>$LOG_FILE 2>&1
 
 main() {
@@ -205,6 +206,16 @@ main() {
 
 # update DNS action
 update_dns () {
+    # check compatibility with DNS provider
+    DNS_PROVIDER_SCRIPT="${INSTALL_DIR}/${DNS_PROVIDER}.sh"
+    if [[ -f $DNS_PROVIDER_SCRIPT && -r $DNS_PROVIDER_SCRIPT ]]; then
+        . $DNS_PROVIDER_SCRIPT
+    else
+        log "Error: Unsupported DNS provider $DNS_PROVIDER found. Missing or non readable script at: $DNS_PROVIDER_SCRIPT" >&2
+        exit 1
+    fi
+    verbose "DNS provider: $DNS_PROVIDER"
+
     # check credentials were set
     if [[ -z "$AUTH_USER" && -z "$AUTH_PASS" ]]; then
         if [[ -f $CREDENTIAL_FILE && -r $CREDENTIAL_FILE ]]; then
@@ -222,7 +233,6 @@ update_dns () {
         log "Password was not provided." >&2
         exit 1
     fi
-    verbose "DNS provider: $DNS_PROVIDER"
     verbose "User: $AUTH_USER"
 
     # check current ip
@@ -283,35 +293,11 @@ process_host() {
 update_host() {
     HOST_IP=$(dig +short $1)
     if [ "$NEW_IP" != "$HOST_IP" ]; then
-        case $DNS_PROVIDER in
-            freedns)
-                update_freedns_host $1
-                ;;
-            dinahosting)
-                update_dinahosting_host $1
-                ;;
-            *)
-                log "Error: Unsupported DNS service $DNS_PROVIDER found." >&2
-                exit 1
-                ;;
-        esac
+        log "Updating $1"
+        update_host $1
     else
         verbose "$1 IP and current IP are equal. Do nothing."
     fi
-}
-
-# update DNS entry of a FreeDNS hostname
-update_freedns_host() {
-    log "Updating $1"
-    curl -u $FREEDNS_USER:$FREEDNS_PASS https://freedns.afraid.org/nic/update?hostname=$1
-}
-
-# update DNS entry of hostname from Dinahostng provider
-# https://en.dinahosting.com/api/documentation#generador-de-codigo
-update_dinahosting_host() {
-    extract_domain $1
-    extract_subdomain $1
-    curl -u $FREEDNS_USER:$FREEDNS_PASS -d "domain=$EXT_DOMAIN&hostname=$EXT_SUBDOMAIN&ip=$NEW_IP&oldIp=&command=Domain_Zone_UpdateTypeA&responseType=Xml" https://dinahosting.com/special/api.php	
 }
 
 # Get options from positional parameters
