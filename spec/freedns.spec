@@ -1,5 +1,5 @@
 Name: freedns
-Version: 1.0.1
+Version: 1.1.0
 Release: 1
 License: MIT
 URL: https://github.com/ibaiul/FreeDNS-client.git
@@ -16,20 +16,19 @@ BuildRoot: ~/rpmbuild
 # rpmbuild --target noarch -bb freedns.spec
 
 %description
-Service to automatically update FreeDNS records of domains hosted in servers 
+Service to automatically update A type DNS records of domains hosted in servers
 with dynamic public IPs.
 
-In the config files you define which FreeDNS subdomains are bind to the local 
-server.
-
-If the local server's public IP changes it will fire the corresponding update 
-requests so that your DNS entries are up to date.
+In the config files you define which hostnames are bind to the local server and
+if the local server's public IP changes, it will fire the corresponding update
+requests to your DNS provider so that your type A records are up to date.
 
 %prep
 echo "BUILDROOT = $RPM_BUILD_ROOT"
 mkdir -p $RPM_BUILD_ROOT/etc/freedns
 mkdir -p $RPM_BUILD_ROOT/opt/freedns
 mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
+mkdir -p $RPM_BUILD_ROOT/var/lib/freedns
 mkdir -p $RPM_BUILD_ROOT/var/log/freedns
 
 cp ~/git/freedns/config/* $RPM_BUILD_ROOT/etc/freedns
@@ -41,13 +40,13 @@ exit
 
 %files
 %dir %attr(755,root,root) /etc/freedns
+%attr(0644, root, root) /etc/freedns/*
 %attr(0600, root, root) /etc/freedns/credentials-example.conf
-%attr(0644, root, root) /etc/freedns/master-example.conf
-%attr(0644, root, root) /etc/freedns/shadow-example.conf
-%attr(0644, root, root) /etc/freedns/README.txt
 %dir %attr(755,root,root) /opt/freedns
-%attr(0744, root, root) /opt/freedns/*
+%attr(0644, root, root) /opt/freedns/*
+%attr(0755, root, root) /opt/freedns/main.sh
 %attr(0744, root, root) /usr/lib/systemd/system/freedns.service
+%dir %attr(700,root,root) /var/lib/freedns
 %dir %attr(755,root,root) /var/log/freedns
 
 %pre
@@ -61,27 +60,33 @@ exit
 
 %post
 sudo touch /etc/freedns/master.conf
-sudo touch /etc/freedns/shadow.conf	
+sudo touch /etc/freedns/shadow.conf
 #sudo chown freedns: /etc/freedns/master.conf
 #sudo chown freedns: /etc/freedns/shadow.conf
+#ln -s /opt/freedns/freedns.sh /bin/freedns
 systemctl daemon-reload
 systemctl condrestart freedns.service
 
 %preun
+#rm -f /bin/freedns
 systemctl stop freedns.service >/dev/null 2>&1
 systemctl disable freedns.service >/dev/null 2>&1
 
 %postun
-
+# if user is deleted then we should delete all files it owns, otherwise a new
+# user with the same UID could read remaining sensitive data
+#if [ "$1" = "0" ]; then
+#   userdel --force freedns 2> /dev/null; true
+#fi
 
 %clean
 echo "Clean: $RPM_BUILD_ROOT"
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Sun Mar 22 2019 Ibai Usubiaga <admin@ibai.eus>
-  - Added support for providing config files as arguments.
-  - Added support for providing master and shadow hostnames as comma separated
-    arguments.
+* Sun Mar 24 2019 Ibai Usubiaga <admin@ibai.eus>
+  - Added support for selecting the DNS provider as an argument.
+  - Added support for the Dinahosting DNS provider.
+  - Improved help page
   - Improved error logs
 
