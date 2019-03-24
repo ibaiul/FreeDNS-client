@@ -5,19 +5,18 @@
 # freedns
 #
 # NAME
-#     freedns - Update DNS entries at freedns.afraid.org
+#     freedns - Update DNS records of type A
 #
 # SYNOPSIS
-#     freedns.sh [OPTIONS]
+#     freedns.sh -a <action> [OPTIONS]
 #     freedns.sh -a start
 #     freedns.sh -a stop
 #     freedns.sh -a status
-#     freedns.sh -a update-dns -v
-#     freedns.sh -a update-dns -v -u user -p password
+#     freedns.sh -a update-dns [OPTIONS]
 #
 # DESCRIPTION
-#     Utility for updating DNS records at FreeDNS for services attached to the 
-#     local server which has a dynamic external IP.
+#     Utility for updating DNS type A records of services attached to the local
+#     server which has a dynamic public IP.
 #
 #     Updates DNS records when the local server's external dynamic IP does not 
 #     match the resolved IP through DNS lookups.
@@ -63,11 +62,12 @@
 #     -v, --verbose
 #             Enable debug logs at /var/log/freedns/freedns.log
 #             Default: disabled
+#             Actions: all
 #
 #     -h, --help
 #             Show help.
 #
-#     -a, --action
+#     -a, --action <action>
 #             Action to be performed. Available actions are:
 #             start      -> Starts freedns as a systemd service which will add a 
 #                           cron job that will check every 5 minutes if the 
@@ -83,43 +83,53 @@
 #             Set the DNS service provider.
 #             Currently supported values: freedns, dinahosting
 #             Default: freedns
+#             Actions: update-dns
 #
-#     -u, --user <freedns_user>
+#     -u, --user <auth_user>
 #             Provide the FreeDNS user instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
 #             credentials config file will be used.
 #             Default taken from: /etc/freedns/credentials.conf
+#             Actions: update-dns
 #
-#     -p, --pass <freedns_password>
+#     -p, --pass <auth_password>
 #             Provide the FreeDNS password instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
 #             credentials config file will be used.
 #             Default taken from: /etc/freedns/credentials.conf
+#             Actions: update-dns
 #
 #     -m, --master <hostname1,hostname2,...>
 #             Provide a comma separated list of master hosts to check instead of
 #             using the configuration file.
 #             Default taken from: /etc/freedns/master.conf
+#             Actions: update-dns
 #
 #     -s, --shadow <hostname1,hostname2,...>
 #             Provide a comma separated list of shadow hosts to check instead of
 #             using the configuration file.
 #             Default taken from: /etc/freedns/shadow.conf
+#             Actions: update-dns
 #
 #     -cf, --credential-file <credentials_config_path>
 #             Use the provided credentials file instead of the default one.
 #             Default: /etc/freedns/credentials.conf
+#             Actions: update-dns
 #
 #     -mf, --master-file
 #             Use the provided master file instead of the default one.
 #             Default: /etc/freedns/master.conf
+#             Actions: update-dns
 #
 #     -sf, --shadow-file
 #             Use the provided shadow file instead of the default one.
 #             Default: /etc/freedns/shadow.conf
+#             Actions: update-dns
+#
 #     -nl, --no-log
 #             Ĺog only to stdout and stderr and do not log to file
 #             Default: disabled
+#             Actions: update-dns
 #
 # TODO
 #     Lock executions:
