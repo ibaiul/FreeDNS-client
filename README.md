@@ -87,14 +87,14 @@ Run the script manually.
 Currently it requires root permissions to avoid any other user in the system reading the credentials file without being the admin.
 
 ```
-sudo /opt/freedns/main.sh -v -a update-dns
+sudo freedns -v -a update-dns
 ```
 Alternatively you can pass the credentials as parameters if you plan to run the script through Jenkins or other kind of mechanism that handles the credentials in another way.
 
 Notice that it is not recommended to write the credentials in plain text unless you can ensure that logging to history is disabled. Prefer passing environment variables.
 
 ```
-/opt/freedns/main.sh -v -a update-dns -u $AUTH_USER -p $AUTH_PASS
+freedns -v -a update-dns -u $AUTH_USER -p $AUTH_PASS
 ```
 ##### Logs
 You can check the logs at **/var/log/freedns/freedns.log**
@@ -103,7 +103,7 @@ You can check the logs at **/var/log/freedns/freedns.log**
 You can see the usage of the command with **-h** or **--help** options.
 
 ```
-sudo /opt/freedns/main.sh -h
+freedns -h
 ```
 
 ### DIY

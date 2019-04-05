@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=oneshot
 User=root
-ExecStart=/opt/freedns/main.sh -a start
-ExecStop=/opt/freedns/main.sh -a stop
+ExecStart=freedns -a start
+ExecStop=freedns -a stop
 RemainAfterExit=yes
 
 [Install]

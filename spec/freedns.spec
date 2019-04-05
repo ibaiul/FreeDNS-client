@@ -63,12 +63,12 @@ sudo touch /etc/freedns/master.conf
 sudo touch /etc/freedns/shadow.conf
 #sudo chown freedns: /etc/freedns/master.conf
 #sudo chown freedns: /etc/freedns/shadow.conf
-#ln -s /opt/freedns/freedns.sh /bin/freedns
+ln -s /opt/freedns/main.sh /usr/bin/freedns
 systemctl daemon-reload
 systemctl condrestart freedns.service
 
 %preun
-#rm -f /bin/freedns
+rm -f /usr/bin/freedns
 systemctl stop freedns.service >/dev/null 2>&1
 systemctl disable freedns.service >/dev/null 2>&1
 

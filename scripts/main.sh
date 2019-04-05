@@ -8,11 +8,11 @@
 #     freedns - Update DNS records of type A
 #
 # SYNOPSIS
-#     freedns.sh -a <action> [OPTIONS]
-#     freedns.sh -a start
-#     freedns.sh -a stop
-#     freedns.sh -a status
-#     freedns.sh -a update-dns [OPTIONS]
+#     freedns -a <action> [OPTIONS]
+#     freedns -a start
+#     freedns -a stop
+#     freedns -a status
+#     freedns -a update-dns [OPTIONS]
 #
 # DESCRIPTION
 #     Utility for updating DNS type A records of services attached to the local
