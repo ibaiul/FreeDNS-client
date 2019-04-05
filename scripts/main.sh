@@ -249,7 +249,8 @@ update_dns () {
     verbose "Current IP: $NEW_IP"
     verbose "Force option enabled: $FORCE"
 
-    # master
+    ERRORS=()
+    # process master hosts
     if [[ ${#MASTERS[@]} -gt 0 ]]; then
         for DOMAIN in "${MASTERS[@]}"; do
             process_host "$DOMAIN" "master"
@@ -261,7 +262,7 @@ update_dns () {
     else
         log "Master config file $MASTER_FILE was not found or was not readable." >&2
     fi
-    # shadow
+    # process shadow hosts
     if [[ ${#SHADOWS[@]} -gt 0 ]]; then
         for DOMAIN in "${SHADOWS[@]}"; do
             process_host "$DOMAIN" "shadow"
@@ -272,6 +273,11 @@ update_dns () {
         done <"$SHADOW_FILE"
     else
         log "Shadow config file $SHADOW_FILE was not found or was not readable." >&2
+    fi
+    # check for any errors in update requests
+    if [ ${#ERRORS[@]} -gt 0 ]; then
+        log "${#ERRORS[@]} errors found: ${ERRORS[@]}" >&2
+        exit 2
     fi
 }
 
