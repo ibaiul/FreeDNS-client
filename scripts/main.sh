@@ -85,6 +85,13 @@
 #             Default: freedns
 #             Actions: update-dns
 #
+#     -f, --force
+#             Update the DNS record regardless of the current IP matching the
+#             record value.
+#             This should be useful to test the script is working.
+#             Default: disabled
+#             Actions: update-dns
+#
 #     -u, --user <auth_user>
 #             Provide the FreeDNS user instead of using the credentials file. 
 #             If no user or password is provided throught the arguments, the 
@@ -153,6 +160,7 @@ SHADOW_FILE=/etc/freedns/shadow.conf
 CREDENTIAL_FILE=/etc/freedns/credentials.conf
 LOG_FILE=/var/log/freedns/freedns.log
 INSTALL_DIR=/opt/freedns
+FORCE=false
 #exec 3>&1 1>>$LOG_FILE 2>&1
 
 main() {
@@ -239,6 +247,7 @@ update_dns () {
     # check current ip
     NEW_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
     verbose "Current IP: $NEW_IP"
+    verbose "Force option enabled: $FORCE"
 
     # master
     if [[ ${#MASTERS[@]} -gt 0 ]]; then
@@ -290,15 +299,24 @@ process_host() {
     fi
 }
 
-# update host DNS if IP has changed
+# update host DNS record if IP has changed or force option is enabled
 update_host_if_needed() {
-    HOST_IP=$(dig +short $1)
-    if [ "$NEW_IP" != "$HOST_IP" ]; then
-        log "Updating $1"
-        update_host $1
+    if [[ ${FORCE} == true ]]; then
+        update_host_common $1
     else
-        verbose "$1 IP and current IP are equal. Do nothing."
+        HOST_IP=$(dig +short $1)
+        if [ "$NEW_IP" != "$HOST_IP" ]; then
+            update_host_common $1
+        else
+            verbose "$1 IP and current IP are equal. Do nothing."
+        fi
     fi
+}
+
+# Common logic to fire DNS update requests
+update_host_common() {
+    log "Updating $1"
+    update_host $1
 }
 
 # Get options from positional parameters
@@ -319,6 +337,9 @@ get_options() {
             -d|--dns)
                 DNS_PROVIDER="$2"
                 shift
+                ;;
+            -f|--force)
+                FORCE=true
                 ;;
             -u|--user)
                 AUTH_USER="$2"
@@ -396,7 +417,7 @@ function log {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a $LOG_FILE
 }
 
-# Log is verbosity is enabled
+# Log if verbosity is enabled
 function verbose {
     if [[ ${VERBOSE} == true ]]; then
         log "$*"
