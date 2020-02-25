@@ -1,6 +1,6 @@
 Name: freedns
 Version: 1.1.1
-Release: 1
+Release: 2
 License: MIT
 URL: https://github.com/ibaiul/FreeDNS-client.git
 Group: System
@@ -13,7 +13,7 @@ Summary: freedns client
 BuildRoot: ~/rpmbuild
 
 # Build with the following command:
-# rpmbuild --target noarch -bb freedns.spec
+# rpmbuild --target noarch -bb freedns.spec --define "_topdir $(pwd)/rpmbuild" --define "_app_dir ~/git/freedns"
 
 %description
 Service to automatically update A type DNS records of domains hosted in servers
@@ -31,10 +31,10 @@ mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/system
 mkdir -p $RPM_BUILD_ROOT/var/lib/freedns
 mkdir -p $RPM_BUILD_ROOT/var/log/freedns
 
-cp ~/git/freedns/config/* $RPM_BUILD_ROOT/etc/freedns
-cp ~/git/freedns/scripts/* $RPM_BUILD_ROOT/opt/freedns
-cp ~/git/freedns/service/freedns.service $RPM_BUILD_ROOT/usr/lib/systemd/system
-cp ~/git/freedns/LICENSE $RPM_BUILD_ROOT/opt/freedns
+cp %{_app_dir}/config/* $RPM_BUILD_ROOT/etc/freedns
+cp %{_app_dir}/scripts/* $RPM_BUILD_ROOT/opt/freedns
+cp %{_app_dir}/service/freedns.service $RPM_BUILD_ROOT/usr/lib/systemd/system
+cp %{_app_dir}/LICENSE $RPM_BUILD_ROOT/opt/freedns
 
 exit
 
@@ -84,9 +84,6 @@ echo "Clean: $RPM_BUILD_ROOT"
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Sun Mar 24 2019 Ibai Usubiaga <admin@ibai.eus>
+* Mon Feb 25 2020 Ibai Usubiaga <admin@ibai.eus>
   - Added support for selecting the DNS provider as an argument.
-  - Added support for the Dinahosting DNS provider.
-  - Improved help page
-  - Improved error logs
-
+  - Added macro to allow setting source directory
