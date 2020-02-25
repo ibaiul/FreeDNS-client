@@ -1,2 +1,4 @@
 .project
 .README.md.html
+.idea
+*.iml
