@@ -85,5 +85,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Feb 25 2020 Ibai Usubiaga <admin@ibai.eus>
-  - Added support for selecting the DNS provider as an argument.
+  - Fixed executable path in service file
   - Added macro to allow setting source directory
