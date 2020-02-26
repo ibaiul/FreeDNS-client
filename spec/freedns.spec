@@ -50,6 +50,9 @@ exit
 %dir %attr(755,root,root) /var/log/freedns
 
 %pre
+if [ $1 == 2 ]; then
+  rm -f /usr/bin/freedns
+fi
 #if ! getent group freedns >/dev/null; then
 #        groupadd -r freedns
 #fi
@@ -59,8 +62,8 @@ exit
 #fi
 
 %post
-sudo touch /etc/freedns/master.conf
-sudo touch /etc/freedns/shadow.conf
+touch /etc/freedns/master.conf
+touch /etc/freedns/shadow.conf
 #sudo chown freedns: /etc/freedns/master.conf
 #sudo chown freedns: /etc/freedns/shadow.conf
 ln -s /opt/freedns/main.sh /usr/bin/freedns
@@ -68,9 +71,11 @@ systemctl daemon-reload
 systemctl condrestart freedns.service
 
 %preun
-rm -f /usr/bin/freedns
-systemctl stop freedns.service >/dev/null 2>&1
-systemctl disable freedns.service >/dev/null 2>&1
+if [ $1 == 0 ]; then
+  systemctl stop freedns.service >/dev/null 2>&1
+  systemctl disable freedns.service >/dev/null 2>&1
+  rm -f /usr/bin/freedns
+fi
 
 %postun
 # if user is deleted then we should delete all files it owns, otherwise a new
@@ -87,3 +92,4 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Feb 25 2020 Ibai Usubiaga <admin@ibai.eus>
   - Fixed executable path in service file
   - Added macro to allow setting source directory
+  - Improved lifecycle of RPM versions
