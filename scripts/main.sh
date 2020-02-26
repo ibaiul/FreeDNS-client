@@ -139,6 +139,11 @@
 #             Actions: update-dns
 #
 # TODO
+#     Unified config
+#     - Create unified config file for DNS providers/auth, master, shadow using
+#       [] sections.
+#     - This would allow enabling/disabling provider which currently is not
+#       available in service mode.
 #     Lock executions:
 #     - Default connect timeout of curl is 120s, so if several unreachable hosts 
 #       are found it could happen that several executions overlap
