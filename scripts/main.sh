@@ -153,7 +153,7 @@
 
 unset $HISTFILE
 
-CRON_CMD="*/5 * * * * /opt/freedns/freedns.sh -v -a update-dns"
+CRON_CMD="*/5 * * * * /usr/bin/freedns -v -a update-dns"
 DNS_PROVIDER=freedns
 MASTER_FILE=/etc/freedns/master.conf
 SHADOW_FILE=/etc/freedns/shadow.conf
