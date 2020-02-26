@@ -89,7 +89,8 @@ echo "Clean: $RPM_BUILD_ROOT"
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
-* Mon Feb 25 2020 Ibai Usubiaga <admin@ibai.eus>
+* Mon Feb 26 2020 Ibai Usubiaga <admin@ibai.eus>
   - Fixed executable path in service file
+  - Fixed cron command
   - Added macro to allow setting source directory
   - Improved lifecycle of RPM versions
